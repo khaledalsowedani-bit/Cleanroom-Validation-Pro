@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cleanroom Validation Pro</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #111827);
+      color: #e5e7eb;
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: rgba(15, 23, 42, 0.95);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      padding: 24px 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: #22c55e;
+    }
+
+    .nav-item {
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      color: #cbd5e1;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #fff;
+    }
+
+    .main {
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .tag {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(34,197,94,0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.25);
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h3 {
+      font-size: 14px;
+      color: #93c5fd;
+      margin-bottom: 10px;
+    }
+
+    .card .value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .panel h2 {
+      margin-bottom: 18px;
+      color: #f8fafc;
+      font-size: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(15,23,42,0.8);
+      color: white;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .status-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .pass {
+      background: rgba(34,197,94,0.12);
+      color: #4ade80;
+      border-color: rgba(34,197,94,0.35);
+    }
+
+    .warn {
+      background: rgba(245,158,11,0.12);
+      color: #fbbf24;
+      border-color: rgba(245,158,11,0.35);
+    }
+
+    .fail {
+      background: rgba(239,68,68,0.12);
+      color: #f87171;
+      border-color: rgba(239,68,68,0.35);
+    }
+
+    .airflow-box {
+      position: relative;
+      height: 320px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0b1220, #0f172a);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 14px;
+    }
+
+    .ceiling {
+      position: absolute;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72%;
+      height: 28px;
+      background: linear-gradient(90deg, #94a3b8, #e2e8f0, #94a3b8);
+      border-radius: 10px;
+      box-shadow: 0 0 25px rgba(125,211,252,0.25);
+      text-align: center;
+      line-height: 28px;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .operating-table {
+      position: absolute;
+      bottom: 55px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 38px;
+      background: #64748b;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 38px;
+      font-size: 13px;
+      color: white;
+      box-shadow: 0 0 12px rgba(255,255,255,0.1);
+    }
+
+    .air-stream {
+      position: absolute;
+      top: 54px;
+      width: 8px;
+      height: 140px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, rgba(56,189,248,0.95), rgba(56,189,248,0.08));
+      animation: flowDown 2.2s infinite ease-in-out;
+      box-shadow: 0 0 16px rgba(56,189,248,0.35);
+    }
+
+    .msg-ticker {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(56,189,248,0.1);
+      border: 1px solid rgba(56,189,248,0.25);
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      color: #7dd3fc;
+      font-weight: 600;
+    }
+
+    .msg-ticker span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 14s linear infinite;
+    }
+
+    .report-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      white-space: pre-wrap;
+      line-height: 1.7;
+      color: #e2e8f0;
+      max-height: 380px;
+      overflow: auto;
+    }
+
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .badge {
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      color: #cbd5e1;
+    }
+
+    @keyframes flowDown {
+      0% {
+        transform: translateY(0);
+        opacity: 0.35;
+      }
+      50% {
+        transform: translateY(18px);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 0.35;
+      }
+    }
+
+    @keyframes ticker {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">Cleanroom <span>Validation Pro</span></div>
+      <div class="nav-item active">📊 Dashboard</div>
+      <div class="nav-item">🏥 Operating Rooms</div>
+      <div class="nav-item">🌬️ Airflow Analysis</div>
+      <div class="nav-item">🧪 Particle Count</div>
+      <div class="nav-item">📄 Validation Reports</div>
+      <div class="nav-item">⚙️ Standards & Limits</div>
+      <div class="nav-item">📁 Projects</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1>Operating Room & Cleanroom Validation System</h1>
+        <div class="tag">ISO 14644 • DIN 1946-4 • ASHRAE 170 • EN 1822</div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Room Classification</h3>
+          <div class="value" id="classCard">—</div>
+        </div>
+        <div class="card">
+          <h3>Overall Status</h3>
+          <div class="value" id="statusCard">—</div>
+        </div>
+        <div class="card">
+          <h3>Air Velocity</h3>
+          <div class="value" id="velocityCard">—</div>
+        </div>
+        <div class="card">
+          <h3>Differential Pressure</h3>
+          <div class="value" id="dpCard">—</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="panel">
+          <h2>Validation Input Panel</h2>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>Project Name</label>
+              <input type="text" id="projectName" placeholder="Kartal Lütfi Kırdar OR Validation" />
+            </div>
+
+            <div class="field">
+              <label>Room Name</label>
+              <input type="text" id="roomName" placeholder="OR-01 / IVF / ICU Isolation" />
+            </div>
+
+            <div class="field">
+              <label>Room Type</label>
+              <select id="roomType">
+                <option value="OR">Operating Room</option>
+                <option value="Cleanroom">Cleanroom</option>
+                <option value="IVF">IVF Lab</option>
+                <option value="Isolation">Isolation Room</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Classification Target</label>
+              <select id="targetClass">
+                <option value="ISO 7">ISO 7</option>
+                <option value="ISO 8">ISO 8</option>
+                <option value="DIN Class Ia">DIN Class Ia</option>
+                <option value="DIN Class Ib">DIN Class Ib</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Average Air Velocity (m/s)</label>
+              <input type="number" step="0.01" id="airVelocity" placeholder="0.25" />
+            </div>
+
+            <div class="field">
+              <label>Differential Pressure (Pa)</label>
+              <input type="number" step="0.1" id="diffPressure" placeholder="15" />
+            </div>
+
+            <div class="field">
+              <label>Temperature (°C)</label>
+              <input type="number" step="0.1" id="temperature" placeholder="20" />
+            </div>
+
+            <div class="field">
+              <label>Relative Humidity (%)</label>
+              <input type="number" step="0.1" id="humidity" placeholder="50" />
+            </div>
+
+            <div class="field">
+              <label>Particle Count ≥0.5 µm (particles/m³)</label>
+              <input type="number" id="particle05" placeholder="352000" />
+            </div>
+
+            <div class="field">
+              <label>Particle Count ≥5.0 µm (particles/m³)</label>
+              <input type="number" id="particle5" placeholder="2930" />
+            </div>
+
+            <div class="field">
+              <label>Air Changes per Hour (ACH)</label>
+              <input type="number" step="0.1" id="ach" placeholder="25" />
+            </div>
+
+            <div class="field">
+              <label>Turbulence Intensity (%)</label>
+              <input type="number" step="0.1" id="ti" placeholder="18" />
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:14px;">
+            <label>Engineer Notes</label>
+            <textarea id="notes" placeholder="Write observations about airflow pattern, LAF performance, filter condition, leakage suspicion, recovery behavior..."></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="analyzeValidation()">Run Validation Analysis</button>
+            <button class="btn-secondary" onclick="clearForm()">Reset</button>
+            <button class="btn-secondary" onclick="downloadReport()">Download Report</button>
+          </div>
+
+          <div id="resultBox" class="status-box warn" style="display:none;"></div>
+          <div id="reportBox" class="report-box" style="display:none;"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Airflow Visualization</h2>
+
+          <div class="airflow-box" id="airflowBox">
+            <div class="ceiling">LAF / LTF Ceiling Panel</div>
+            <div class="air-stream" style="left: 18%; animation-delay: 0s;"></div>
+            <div class="air-stream" style="left: 28%; animation-delay: 0.2s;"></div>
+            <div class="air-stream" style="left: 38%; animation-delay: 0.4s;"></div>
+            <div class="air-stream" style="left: 48%; animation-delay: 0.6s;"></div>
+            <div class="air-stream" style="left: 58%; animation-delay: 0.8s;"></div>
+            <div class="air-stream" style="left: 68%; animation-delay: 1s;"></div>
+            <div class="operating-table">Operating Table / Critical Zone</div>
+          </div>
+
+          <div class="msg-ticker">
+            <span id="tickerText">System ready • Awaiting measurement input • Airflow visualization active • Validation rules loaded •</span>
+          </div>
+
+          <div class="legend">
+            <div class="badge">🌬️ Laminar Flow Pattern</div>
+            <div class="badge">🧪 Particle Compliance</div>
+            <div class="badge">📏 Differential Pressure</div>
+            <div class="badge">🏥 Operating Room Logic</div>
+            <div class="badge">📘 Engineering Assessment</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function analyzeValidation() {
+      const projectName = document.getElementById("projectName").value || "Unnamed Project";
+      const roomName = document.getElementById("roomName").value || "Unnamed Room";
+      const roomType = document.getElementById("roomType").value;
+      const targetClass = document.getElementById("targetClass").value;
+      const airVelocity = parseFloat(document.getElementById("airVelocity").value) || 0;
+      const diffPressure = parseFloat(document.getElementById("diffPressure").value) || 0;
+      const temperature = parseFloat(document.getElementById("temperature").value) || 0;
+      const humidity = parseFloat(document.getElementById("humidity").value) || 0;
+      const particle05 = parseFloat(document.getElementById("particle05").value) || 0;
+      const particle5 = parseFloat(document.getElementById("particle5").value) || 0;
+      const ach = parseFloat(document.getElementById("ach").value) || 0;
+      const ti = parseFloat(document.getElementById("ti").value) || 0;
+      const notes = document.getElementById("notes").value || "No notes added.";
+
+      let checks = [];
+      let passed = 0;
+      let warned = 0;
+      let failed = 0;
+
+      // Initial engineering limits - customizable
+      // ISO 7 rough reference values:
+      let p05Limit = 352000;
+      let p5Limit = 2930;
+
+      if (targetClass === "ISO 8") {
+        p05Limit = 3520000;
+        p5Limit = 29300;
+      }
+
+      // Air velocity logic for OR LAF / LTF
+      if (airVelocity >= 0.22 && airVelocity <= 0.30) {
+        checks.push("Air velocity is within acceptable unidirectional flow range.");
+        passed++;
+      } else if ((airVelocity >= 0.18 && airVelocity < 0.22) || (airVelocity > 0.30 && airVelocity <= 0.35)) {
+        checks.push("Air velocity is near the limit and should be reviewed.");
+        warned++;
+      } else {
+        checks.push("Air velocity is outside the acceptable engineering range.");
+        failed++;
+      }
+
+      // Differential pressure
+      if (diffPressure >= 10) {
+        checks.push("Differential pressure is acceptable for positive pressure control.");
+        passed++;
+      } else if (diffPressure >= 5) {
+        checks.push("Differential pressure is marginal.");
+        warned++;
+      } else {
+        checks.push("Differential pressure is insufficient.");
+        failed++;
+      }
+
+      // Temperature
+      if (temperature >= 18 && temperature <= 22) {
+        checks.push("Temperature is within operating room validation comfort range.");
+        passed++;
+      } else if (temperature >= 17 && temperature <= 24) {
+        checks.push("Temperature is slightly خارج preferred range.");
+        warned++;
+      } else {
+        checks.push("Temperature is outside recommended range.");
+        failed++;
+      }
+
+      // Humidity
+      if (humidity >= 40 && humidity <= 60) {
+        checks.push("Relative humidity is acceptable.");
+        passed++;
+      } else if (humidity >= 30 && humidity <= 65) {
+        checks.push("Relative humidity is marginal.");
+        warned++;
+      } else {
+        checks.push("Relative humidity is outside acceptable range.");
+        failed++;
+      }
+
+      // Particle counts
+      if (particle05 <= p05Limit) {
+        checks.push(`Particle count ≥0.5 µm complies with ${targetClass}.`);
+        passed++;
+      } else {
+        checks.push(`Particle count ≥0.5 µm exceeds ${targetClass} limit.`);
+        failed++;
+      }
+
+      if (particle5 <= p5Limit) {
+        checks.push(`Particle count ≥5.0 µm complies with ${targetClass}.`);
+        passed++;
+      } else {
+        checks.push(`Particle count ≥5.0 µm exceeds ${targetClass} limit.`);
+        failed++;
+      }
+
+      // ACH logic
+      if (ach >= 20) {
+        checks.push("Air change rate is acceptable for healthcare critical area baseline.");
+        passed++;
+      } else if (ach >= 15) {
+        checks.push("Air change rate is borderline.");
+        warned++;
+      } else {
+        checks.push("Air change rate is insufficient.");
+        failed++;
+      }
+
+      // TI logic
+      if (targetClass === "DIN Class Ia") {
+        if (ti <= 20) {
+          checks.push("Turbulence intensity is acceptable for DIN Class Ia reference.");
+          passed++;
+        } else if (ti <= 25) {
+          checks.push("Turbulence intensity is near acceptance threshold.");
+          warned++;
+        } else {
+          checks.push("Turbulence intensity exceeds target for DIN Class Ia.");
+          failed++;
+        }
+      } else {
+        if (ti <= 30) {
+          checks.push("Turbulence intensity is acceptable.");
+          passed++;
+        } else {
+          checks.push("Turbulence intensity should be reviewed.");
+          warned++;
+        }
+      }
+
+      let overallStatus = "PASS";
+      let statusClass = "pass";
+      let tickerMessage = "Validation passed • Airflow appears stable • Engineering criteria acceptable •";
+
+      if (failed >= 2) {
+        overallStatus = "FAIL";
+        statusClass = "fail";
+        tickerMessage = "Critical non-conformity detected • Review airflow, pressure, particle level, and HVAC balancing •";
+      } else if (failed === 1 || warned >= 2) {
+        overallStatus = "WARNING";
+        statusClass = "warn";
+        tickerMessage = "Some parameters are near limits • Further engineering review recommended •";
+      }
+
+      const resultBox = document.getElementById("resultBox");
+      resultBox.style.display = "block";
+      resultBox.className = "status-box " + statusClass;
+      resultBox.innerHTML = `Overall Validation Status: <strong>${overallStatus}</strong>`;
+
+      document.getElementById("classCard").innerText = targetClass;
+      document.getElementById("statusCard").innerText = overallStatus;
+      document.getElementById("velocityCard").innerText = airVelocity ? airVelocity.toFixed(2) + " m/s" : "—";
+      document.getElementById("dpCard").innerText = diffPressure ? diffPressure.toFixed(1) + " Pa" : "—";
+      document.getElementById("tickerText").innerText = tickerMessage;
+
+      // Visual airflow effect
+      const airflowBox = document.getElementById("airflowBox");
+      if (airVelocity >= 0.22 && airVelocity <= 0.30) {
+        airflowBox.style.boxShadow = "0 0 30px rgba(34,197,94,0.18)";
+      } else if ((airVelocity >= 0.18 && airVelocity < 0.22) || (airVelocity > 0.30 && airVelocity <= 0.35)) {
+        airflowBox.style.boxShadow = "0 0 30px rgba(245,158,11,0.18)";
+      } else {
+        airflowBox.style.boxShadow = "0 0 30px rgba(239,68,68,0.18)";
+      }
+
+      const report = `
+PROJECT REPORT
+==============================
+Project Name: ${projectName}
+Room Name: ${roomName}
+Room Type: ${roomType}
+Target Classification: ${targetClass}
+
+MEASURED PARAMETERS
+------------------------------
+Average Air Velocity: ${airVelocity} m/s
+Differential Pressure: ${diffPressure} Pa
+Temperature: ${temperature} °C
+Relative Humidity: ${humidity} %
+Particle Count ≥0.5 µm: ${particle05} particles/m³
+Particle Count ≥5.0 µm: ${particle5} particles/m³
+Air Changes per Hour: ${ach}
+Turbulence Intensity: ${ti} %
+
+ENGINEERING EVALUATION
+------------------------------
+${checks.map((c, i) => (i + 1) + ". " + c).join("\n")}
+
+OVERALL STATUS
+------------------------------
+${overallStatus}
+
+ENGINEER NOTES
+------------------------------
+${notes}
+
+IMPORTANT NOTE
+------------------------------
+This is an initial engineering decision-support output.
+Final compliance should be verified against the approved project protocol,
+measurement state (as-built / at-rest / operational), applicable standard edition,
+room function, filter class, air distribution concept, and customer acceptance criteria.
+      `.trim();
+
+      const reportBox = document.getElementById("reportBox");
+      reportBox.style.display = "block";
+      reportBox.textContent = report;
+    }
+
+    function clearForm() {
+      document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+      document.getElementById("targetClass").value = "ISO 7";
+      document.getElementById("roomType").value = "OR";
+      document.getElementById("resultBox").style.display = "none";
+      document.getElementById("reportBox").style.display = "none";
+      document.getElementById("classCard").innerText = "—";
+      document.getElementById("statusCard").innerText = "—";
+      document.getElementById("velocityCard").innerText = "—";
+      document.getElementById("dpCard").innerText = "—";
+      document.getElementById("tickerText").innerText =
+        "System ready • Awaiting measurement input • Airflow visualization active • Validation rules loaded •";
+      document.getElementById("airflowBox").style.boxShadow = "none";
+    }
+
+    function downloadReport() {
+      const reportText = document.getElementById("reportBox").textContent;
+      if (!reportText.trim()) {
+        alert("Please run validation analysis first.");
+        return;
+      }
+      const blob = new Blob([reportText], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "validation_report.txt";
+      link.click();
+    }
+  </script>
+</body>
+</html>
